@@ -11,7 +11,7 @@ class PygaWrapperMiddleware(object):
         user_data ={}
         signals.pyga_user_query.send(sender=None, request=request, user_data=user_data)
         if not 'id' in user_data:
-            raise NotImplemented ('you must implement pyga_user_query in your app')
+            raise NotImplementedError ('you must implement pyga_user_query in your app')
         else:
             u = user_data['id']
 
