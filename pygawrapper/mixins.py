@@ -18,7 +18,7 @@ class PygaMixin(object):
         return self.ga_visitor
 
     def get_ga_session(self, *args, **kwargs):
-        self.ga_session = Session().extract_from_utma(self.get_utmb())
+        self.ga_session = Session().extract_from_utmb(self.get_utmb())
         return self.ga_session
 
     def get_ga_tracker(self, GOOGLE_ANALYTICS_CODE, GOOGLE_ANALYTICS_SITE, *args, **kwargs):
