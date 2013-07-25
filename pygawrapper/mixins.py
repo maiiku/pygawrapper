@@ -7,18 +7,20 @@ class PygaMixin(object):
     """
     def get_utma(self, user_id, *args, **kwargs):
         ga = Pygawrapper.objects.get_or_create(user_id=user_id)
-        return StringCookieJar(ga.utma)._cookies
+        self._utma = StringCookieJar(ga.utma)._cookies
+        return self._utma
 
     def get_utmb(self, user_id, *args, **kwargs):
         ga = Pygawrapper.objects.get_or_create(user_id=user_id)
-        return StringCookieJar(ga.utmb)._cookies
+        self._utmb = StringCookieJar(ga.utmb)._cookies
+        return self._utmb
 
     def get_ga_visitor(self, *args, **kwargs):
-        self.ga_visitor = Visitor().extract_from_utma(self.get_utma())
+        self.ga_visitor = Visitor().extract_from_utma(self._utma)
         return self.ga_visitor
 
     def get_ga_session(self, *args, **kwargs):
-        self.ga_session = Session().extract_from_utmb(self.get_utmb())
+        self.ga_session = Session().extract_from_utmb(self._utmb)
         return self.ga_session
 
     def get_ga_tracker(self, GOOGLE_ANALYTICS_CODE, GOOGLE_ANALYTICS_SITE, user_id, *args, **kwargs):
