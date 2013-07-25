@@ -23,6 +23,8 @@ class PygaMixin(object):
 
     def get_ga_tracker(self, GOOGLE_ANALYTICS_CODE, GOOGLE_ANALYTICS_SITE, *args, **kwargs):
         self.ga_tracker = Tracker(GOOGLE_ANALYTICS_CODE, GOOGLE_ANALYTICS_SITE)
+        self.ga_session()
+        self.get_ga_visitor()
         return self.ga_tracker
 
     def track_transaction(self, transaction):
