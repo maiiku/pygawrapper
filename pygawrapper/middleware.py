@@ -20,17 +20,17 @@ class PygaWrapperMiddleware(object):
             #retrive ga data from db
             ga = Pygawrapper.objects.get_or_create(user_id=u)
             #set session data for GA
-            utmb = StringCookieJar(u.utmb)
+            utmb = StringCookieJar(ga.utmb)
             _utmb = StringCookieJar(request.COOKIES.get('__utmb'))
             if utmb != _utmb:
-                u.profile.utmb = _utmb.dump()
-                u.save()
+                ga.utmb = _utmb.dump()
+                ga.save()
             #save user cookie in DB
             utma = StringCookieJar(u.utma)
             _utma = StringCookieJar(request.COOKIES.get('__utma'))
             if utma != _utma:
-                u.profile.utma = _utma.dump()
-                u.save()
+                ga.utma = _utma.dump()
+                ga.save()
 
         return None
 
