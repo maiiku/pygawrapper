@@ -5,11 +5,11 @@ class PygaMixin(object):
     """
     Add function to retrive ga data.
     """
-    def get_utma(self, user_id, request, *args, **kwargs):
+    def get_utma(self, user_id, *args, **kwargs):
         ga = Pygawrapper.objects.get_or_create(user_id=user_id)
         return StringCookieJar(ga.utma)._cookies
 
-    def get_utmb(self, user_id, request, *args, **kwargs):
+    def get_utmb(self, user_id, *args, **kwargs):
         ga = Pygawrapper.objects.get_or_create(user_id=user_id)
         return StringCookieJar(ga.utmb)._cookies
 
@@ -21,10 +21,10 @@ class PygaMixin(object):
         self.ga_session = Session().extract_from_utmb(self.get_utmb())
         return self.ga_session
 
-    def get_ga_tracker(self, GOOGLE_ANALYTICS_CODE, GOOGLE_ANALYTICS_SITE, *args, **kwargs):
+    def get_ga_tracker(self, GOOGLE_ANALYTICS_CODE, GOOGLE_ANALYTICS_SITE, user_id, *args, **kwargs):
         self.ga_tracker = Tracker(GOOGLE_ANALYTICS_CODE, GOOGLE_ANALYTICS_SITE)
-        self.get_ga_session()
-        self.get_ga_visitor()
+        self.get_ga_session(user_id)
+        self.get_ga_visitor(user_id)
         return self.ga_tracker
 
     def track_transaction(self, transaction):
