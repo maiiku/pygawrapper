@@ -18,7 +18,7 @@ class PygaWrapperMiddleware(object):
         #if we have a user, continue
         if u:
             #retrive ga data from db
-            ga = Pygawrapper.objects.get_or_create(user_id=u)
+            ga, created = Pygawrapper.objects.get_or_create(user_id=u)
             #set session data for GA
             utmb = StringCookieJar(ga.utmb)
             _utmb = StringCookieJar(request.COOKIES.get('__utmb'))
