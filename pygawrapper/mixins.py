@@ -7,13 +7,13 @@ class PygaMixin(object):
     """
     def get_utma(self, user_id, *args, **kwargs):
         if not hasattr(self, '_utma'):
-            ga = Pygawrapper.objects.get_or_create(user_id=user_id)
+            ga, created = Pygawrapper.objects.get_or_create(user_id=user_id)
             self._utma = StringCookieJar(ga.utma)._cookies
         return self._utma
 
     def get_utmb(self, user_id, *args, **kwargs):
         if not hasattr(self, '_utmb'):
-            ga = Pygawrapper.objects.get_or_create(user_id=user_id)
+            ga, created = Pygawrapper.objects.get_or_create(user_id=user_id)
             self._utmb = StringCookieJar(ga.utmb)._cookies
         return self._utmb
 
