@@ -26,7 +26,7 @@ class PygaWrapperMiddleware(object):
                 ga.utmb = _utmb.dump()
                 ga.save()
             #save user cookie in DB
-            utma = StringCookieJar(u.utma)
+            utma = StringCookieJar(ga.utma)
             _utma = StringCookieJar(request.COOKIES.get('__utma'))
             if utma != _utma:
                 ga.utma = _utma.dump()
