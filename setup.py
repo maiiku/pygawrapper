@@ -7,7 +7,7 @@ setup(
     name='pygawrapper',
     description='pyga wrapper for django',
     long_description='pyga wrapper for django',
-    version='1.0',
+    version='1.1',
     packages=find_packages(),
     url='https://github.com/maiiku/pygawrapper.git',
     license='MIT',
