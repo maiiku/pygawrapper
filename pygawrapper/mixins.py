@@ -1,5 +1,5 @@
 from pygawrapper.models import Pygawrapper
-from pyga.requests import Tracker, Transaction, Item as gaItem, Visitor, Session
+from pyga.requests import Tracker, Transaction, Item as gaItem, Visitor, Session, Page
 from pygawrapper.string_cookie_jar import StringCookieJar
 class PygaMixin(object):
     """
@@ -26,4 +26,8 @@ class PygaMixin(object):
         return self.ga_tracker
 
     def track_transaction(self, transaction):
-        self.ga_tracker(transaction=transaction,session=self.ga_session,visitor=self.ga_visitor)
+        self.ga_tracker.track_transaction(transaction=transaction,session=self.ga_session,visitor=self.ga_visitor)
+
+    def track_pageview(self, path):
+        page = Page(path)
+        self.ga_tracker.track_pageview(page=page,session=self.ga_session,visitor=self.ga_visitor)
