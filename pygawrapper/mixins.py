@@ -30,8 +30,8 @@ class PygaMixin(object):
     def get_ga_tracker(self, GOOGLE_ANALYTICS_CODE, GOOGLE_ANALYTICS_SITE, user_id, *args, **kwargs):
         if not hasattr(self, 'ga_tracker'):
             self.ga_tracker = Tracker(GOOGLE_ANALYTICS_CODE, GOOGLE_ANALYTICS_SITE)
-            self.get_ga_session(user_id)
-            self.get_ga_visitor(user_id)
+            self.get_ga_session(user_id=user_id)
+            self.get_ga_visitor(user_id=user_id)
         return self.ga_tracker
 
     def track_transaction(self, transaction):
