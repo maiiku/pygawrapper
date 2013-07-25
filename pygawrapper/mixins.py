@@ -1,6 +1,10 @@
 from pygawrapper.models import Pygawrapper
 from pyga.requests import Tracker, Transaction, Item as gaItem, Visitor, Session, Page
 from pygawrapper.string_cookie_jar import StringCookieJar
+from django.conf import settings
+GA_CODE = getattr(settings,'GOOGLE_ANALYTICS_CODE')
+GA_SITE = getattr(settings,'GOOGLE_ANALYTICS_SITE')
+
 class PygaMixin(object):
     """
     Add function to retrive ga data.
@@ -27,12 +31,12 @@ class PygaMixin(object):
             self.ga_session = Session().extract_from_utmb(self.get_utmb(kwargs['user_id']))
         return self.ga_session
 
-    def get_ga_tracker(self, GOOGLE_ANALYTICS_CODE, GOOGLE_ANALYTICS_SITE, user_id, *args, **kwargs):
+    def get_ga_tracker(self, user_id, GOOGLE_ANALYTICS_CODE=GA_CODE, GOOGLE_ANALYTICS_SITE=GA_SITE, *args, **kwargs):
         if not hasattr(self, 'ga_tracker'):
             self.ga_tracker = Tracker(GOOGLE_ANALYTICS_CODE, GOOGLE_ANALYTICS_SITE)
             self.get_ga_session(user_id=user_id)
             self.get_ga_visitor(user_id=user_id)
-        return self.ga_tracker
+        return self
 
     def track_transaction(self, transaction):
         self.ga_tracker.track_transaction(transaction=transaction,session=self.ga_session,visitor=self.ga_visitor)
