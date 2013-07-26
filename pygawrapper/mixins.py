@@ -1,5 +1,5 @@
 from pygawrapper.models import Pygawrapper
-from pyga.requests import Tracker, Transaction, Item as gaItem, Visitor, Session, Page
+from pyga.requests import Tracker, Transaction, Item as gaItem, Visitor, Session, Page, Event
 from pygawrapper.string_cookie_jar import StringCookieJar
 from django.conf import settings
 GA_CODE = getattr(settings,'GOOGLE_ANALYTICS_CODE')
@@ -10,37 +10,98 @@ class PygaMixin(object):
     Add function to retrive ga data.
     """
     def get_utma(self, user_id, *args, **kwargs):
-        if not hasattr(self, '_utma'):
+        """
+        Gets stored __utma cookie
+        """
+        if not hasattr(self, '_utma') or 'force' in kwargs:
             ga, created = Pygawrapper.objects.get_or_create(user_id=user_id)
             self._utma = StringCookieJar(ga.utma)._cookies
         return self._utma
 
     def get_utmb(self, user_id, *args, **kwargs):
-        if not hasattr(self, '_utmb'):
+        """
+        Gets stored __utmb cookie
+        """
+        if not hasattr(self, '_utmb') or 'force' in kwargs:
             ga, created = Pygawrapper.objects.get_or_create(user_id=user_id)
             self._utmb = StringCookieJar(ga.utmb)._cookies
         return self._utmb
 
     def get_ga_visitor(self, *args, **kwargs):
-        if not hasattr(self, 'ga_visitor'):
-            self.ga_visitor = Visitor().extract_from_utma(self.get_utma(kwargs['user_id']))
+        """
+        Gets a visitor and optionally feeds it with __utma data if user_id is provided
+        """
+        if not hasattr(self, 'ga_visitor') or 'force' in kwargs:
+            self.ga_visitor = Visitor().extract_from_utma(self.get_utma(kwargs['user_id'], **kwargs)) if \
+                'user_id' in kwargs else Visitor()
         return self.ga_visitor
 
     def get_ga_session(self, *args, **kwargs):
-        if not hasattr(self, 'ga_session'):
-            self.ga_session = Session().extract_from_utmb(self.get_utmb(kwargs['user_id']))
+        """
+        Gets a session and optionally feeds it with __utmb data if user_id is provided
+        """
+        if not hasattr(self, 'ga_session') or 'force' in kwargs:
+            self.ga_session = Session().extract_from_utmb(self.get_utmb(kwargs['user_id'], **kwargs)) \
+                if 'user_id' in kwargs else Session()
         return self.ga_session
 
-    def get_ga_tracker(self, user_id, GOOGLE_ANALYTICS_CODE=GA_CODE, GOOGLE_ANALYTICS_SITE=GA_SITE, *args, **kwargs):
-        if not hasattr(self, 'ga_tracker'):
+    def get_ga_tracker(self, user_id=None, GOOGLE_ANALYTICS_CODE=GA_CODE, GOOGLE_ANALYTICS_SITE=GA_SITE, *args, **kwargs):
+        """
+        Creates a tracker and fills it with session and visitor, optionally matched with given user if user_id is provided
+        Returns self for convenient use of other wrapped functions
+        Pass force=True in to re-initiate the tracker
+        """
+        if not hasattr(self, 'ga_tracker') or 'force' in kwargs:
             self.ga_tracker = Tracker(GOOGLE_ANALYTICS_CODE, GOOGLE_ANALYTICS_SITE)
-            self.get_ga_session(user_id=user_id)
-            self.get_ga_visitor(user_id=user_id)
+            self.get_ga_session(user_id=user_id, **kwargs)
+            self.get_ga_visitor(user_id=user_id, **kwargs)
         return self
 
-    def track_transaction(self, transaction):
-        self.ga_tracker.track_transaction(transaction=transaction,session=self.ga_session,visitor=self.ga_visitor)
-
-    def track_pageview(self, path):
+    def track_pageview(self, path, **kwargs):
+        """
+        @variable str page
+        @variable dict kwargs (optional) {'title', 'charset', 'referrer', 'load_time'}
+        Sends page hit to GA with given path as the page
+        """
         page = Page(path)
+        page.title = kwargs.get('title', None)
+        page.charset = kwargs.get('charset', None)
+        page.referrer = kwargs.get('referrer', None)
+        page.load_time = kwargs.get('load_time', None)
         self.ga_tracker.track_pageview(page=page,session=self.ga_session,visitor=self.ga_visitor)
+
+    def track_transaction(self, transaction, items):
+        """
+        @variable dict transaction {'order_id', 'order_id', 'tax', u'affiliation', 'shipping', u'city', u'state',
+                                    u'country'}
+        @variable list of dicts items  [{'sku', u'name', 'variation', 'price', 'quantity' }, {...}]
+        Sends transaction to GA e-commerce
+        """
+        trans = Transaction()
+        trans.order_id = transaction.get('order_id', None)
+        trans.total = transaction.get('total', None)
+        trans.tax = transaction.get('tax', None)
+        trans.affiliation = transaction.get('affiliation', None)
+        trans.shipping = transaction.get('shipping', None)
+        trans.city = transaction.get('city', None)
+        trans.state = transaction.get('state', None)
+        trans.country = transaction.get('country', None)
+
+        for item in items:
+            gitem = gaItem()
+            gitem.sku = item.get('sku', None)
+            gitem.name = item.get('name', None)
+            gitem.variation = item.get('variation', None)
+            gitem.price = item.get('price', None)
+            gitem.quantity = item.get('quantity', None)
+            trans.add_item(gitem)
+
+        self.ga_tracker.track_transaction(transaction=trans,session=self.ga_session,visitor=self.ga_visitor)
+
+    def track_event(self,  category=None, action=None, label=None, value=None, noninteraction=False):
+        """
+        Sends event to GA
+        """
+        e = Event(category=category, action=action, label=label, value=value)
+
+        self.ga_tracker.track_event(event=e,session=self.ga_session,visitor=self.ga_visitor)
