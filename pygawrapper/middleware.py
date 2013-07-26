@@ -4,6 +4,8 @@ import logging
 from pygawrapper import signals
 from pygawrapper.string_cookie_jar import StringCookieJar
 from pygawrapper.models import Pygawrapper
+from django.conf import settings
+ADD_TRACKER = getattr(settings,'PYGA_SET_REQUEST_TRACKER')
 
 class PygaWrapperMiddleware(object):
 
@@ -31,8 +33,16 @@ class PygaWrapperMiddleware(object):
             if utma != _utma:
                 ga.utma = _utma.dump()
                 ga.save()
+            if ADD_TRACKER:
+                from pygawrapper.mixins import PygaMixin
+                request.tracker = PygaMixin().get_ga_tracker(user_id=u)
+        else:
+            #add anonymous tracker
+            if ADD_TRACKER:
+                from pygawrapper.mixins import PygaMixin
+                request.tracker = PygaMixin().get_ga_tracker()
 
-        return None
+        return request
 
     def process_response(self, request, response):
 
