@@ -1,4 +1,3 @@
-
 # pygawrapper README file
 
 @author Michal Korzeniowski <mko_san@lafiel.net>
@@ -72,13 +71,25 @@ Setup:
     ...
     ```
 
-6. runc syncdb to create pygawrapper's table
+**OR**
+
+    
+4a. you can also tell pygawrapper to extand `request` object with `tracker`. The advantage of that apprach is that you get access to pygawrapper function from request regardsless of user authentication, with Google Analitycs session/visitor data preserved. To achive this you should add following line to your Django settings:
+    ```
+    PYGA_SET_REQUEST_TRACKER = True
+    ```
+    You will be able to access pygawrappers function using:
+    ```
+    request.tracker
+    ```
+
+5. runc syncdb to create pygawrapper's table
 
     in your project root run
     ```
     python manage.py syncdb
     ```
-5. See optional setup below
+6. See optional setup below
 
 
 Optional setup:
