@@ -62,7 +62,7 @@ Setup:
     ```
 
 
-4. add PygaMixin to desired class you wish to extend with pyga's functions
+4. a) add PygaMixin to desired class you wish to extend with pyga's functions
     ```python
     example (extending user profile):
     
@@ -71,10 +71,8 @@ Setup:
     ...
     ```
 
-**OR**
-
-    
-4a. you can also tell pygawrapper to extand `request` object with `tracker`. The advantage of that apprach is that you get access to pygawrapper function from request regardsless of user authentication, with Google Analitycs session/visitor data preserved. To achive this you should add following line to your Django settings:
+    b) **or** you can tell pygawrapper to extand `request` object with `tracker`. 
+    The advantage of that apprach is that you get access to pygawrapper function from request regardsless of user authentication, with Google Analitycs session/visitor data preserved. To achive this you should add following line to your Django settings:
     ```
     PYGA_SET_REQUEST_TRACKER = True
     ```
@@ -82,6 +80,7 @@ Setup:
     ```
     request.tracker
     ```
+
 
 5. runc syncdb to create pygawrapper's table
 
