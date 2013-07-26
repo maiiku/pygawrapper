@@ -14,7 +14,7 @@ A wrapper class for pyga (Python Google Analitycs) providing middleware and mixi
 
 Requirements:
 -------------
-pyga >= 2.2.1
+pyga >= 2.2.1  
 django
 
 
