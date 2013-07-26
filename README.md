@@ -1,10 +1,9 @@
 # pygawrapper README file
 
-@author Michal Korzeniowski <mko_san@lafiel.net>
-
-@version 1.1
-
-@date 07-2013
+@alternate-name pyga-django
+@author Michal Korzeniowski <mko_san@lafiel.net>  
+@version 1.1  
+@date 07-2013  
 
 
 Description:
