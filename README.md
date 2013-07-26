@@ -27,7 +27,7 @@ pip install -e git+https://github.com/maiiku/pygawrapper.git#egg=pygawrapper
 
 Setup:
 ------
-#####1. add pygawrapper to installed apps in your django settings
+1. add pygawrapper to installed apps in your django settings
     ```
 
     INSTALLED_APPS = (
@@ -37,7 +37,7 @@ Setup:
     )
     ```
   
-#####2. add pygawrapper middleware in your django settings anywhere AFTER django auth middlware
+2. add pygawrapper middleware in your django settings anywhere AFTER django auth middlware
     ```
     MIDDLEWARE_CLASSES = (
         ...
@@ -47,7 +47,7 @@ Setup:
         ...
     )
     ```
-#####3. implement a reciver for pygawrapper's user request signal
+3. implement a reciver for pygawrapper's user request signal
 
     example implementation
     ```python
@@ -61,7 +61,7 @@ Setup:
     ```
 
 
-#####4. a) add PygaMixin to desired class you wish to extend with pyga's functions  
+4. a) add PygaMixin to desired class you wish to extend with pyga's functions  
 
     example (extending user profile):    
     
@@ -82,13 +82,13 @@ Setup:
     ```
 
 
-#####5. runc syncdb to create pygawrapper's table
+5. runc syncdb to create pygawrapper's table
 
     in your project root run
     ```
     python manage.py syncdb
     ```
-#####6. See optional setup below
+6. See optional setup below
 
 
 Optional setup:
