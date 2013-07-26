@@ -43,7 +43,7 @@ class PygaMixin(object):
     def set_utma(self, utma):
         self._utma = utma
 
-    def set_utma(self, utmb):
+    def set_utmb(self, utmb):
         self._utmb = utmb
 
     def set_utm(self, utma, utmb):
