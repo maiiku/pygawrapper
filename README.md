@@ -63,6 +63,7 @@ Setup:
 
 
 4. a) add PygaMixin to desired class you wish to extend with pyga's functions
+
     example (extending user profile):    
     ```python
     from pygawrapper.mixins import PygaMixin
