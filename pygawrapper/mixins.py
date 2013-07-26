@@ -40,6 +40,16 @@ class PygaMixin(object):
             self._utmb = StringCookieJar(_utmb)._cookies
         return self._utmb
 
+    def set_utma(self, utma):
+        self._utma = utma
+
+    def set_utma(self, utmb):
+        self._utmb = utmb
+
+    def set_utm(self, utma, utmb):
+        self.set_utma(utma)
+        self.set_utmb(utmb)
+
     def get_ga_visitor(self, *args, **kwargs):
         """
         Gets a visitor and optionally feeds it with __utma data if user_id is provided
