@@ -4,6 +4,7 @@ from pygawrapper.string_cookie_jar import StringCookieJar
 from django.conf import settings
 GA_CODE = getattr(settings,'GOOGLE_ANALYTICS_CODE')
 GA_SITE = getattr(settings,'GOOGLE_ANALYTICS_SITE')
+from django.core.exceptions import ObjectDoesNotExist
 
 class PygaMixin(object):
     """
@@ -14,8 +15,14 @@ class PygaMixin(object):
         Gets stored __utma cookie
         """
         if not hasattr(self, '_utma') or 'force' in kwargs:
-            ga, created = Pygawrapper.objects.get_or_create(user_id=user_id)
-            self._utma = StringCookieJar(ga.utma)._cookies
+            try:
+                ga = Pygawrapper.objects.get(user_id=user_id)
+                _utma = ga.utma
+            except Pygawrapper.DoesNotExist:
+                _utma = None
+            if not _utma:
+                raise ObjectDoesNotExist('__utma for user %s does not exist in database. PygaMiddleware must set it first!')
+            self._utma = StringCookieJar(_utma)._cookies
         return self._utma
 
     def get_utmb(self, user_id, *args, **kwargs):
@@ -23,8 +30,14 @@ class PygaMixin(object):
         Gets stored __utmb cookie
         """
         if not hasattr(self, '_utmb') or 'force' in kwargs:
-            ga, created = Pygawrapper.objects.get_or_create(user_id=user_id)
-            self._utmb = StringCookieJar(ga.utmb)._cookies
+            try:
+                ga = Pygawrapper.objects.get(user_id=user_id)
+                _utmb = ga.utmb
+            except Pygawrapper.DoesNotExist:
+                _utmb = None
+            if not _utmb:
+                raise ObjectDoesNotExist('__utmb for user %s does not exist in database. PygaMiddleware must set it first!')
+            self._utmb = StringCookieJar(_utmb)._cookies
         return self._utmb
 
     def get_ga_visitor(self, *args, **kwargs):
@@ -53,8 +66,8 @@ class PygaMixin(object):
         """
         if not hasattr(self, 'ga_tracker') or 'force' in kwargs:
             self.ga_tracker = Tracker(GOOGLE_ANALYTICS_CODE, GOOGLE_ANALYTICS_SITE)
-            self.get_ga_session(user_id=user_id, **kwargs)
-            self.get_ga_visitor(user_id=user_id, **kwargs)
+            self.get_ga_session(**kwargs)
+            self.get_ga_visitor(**kwargs)
         return self
 
     def track_pageview(self, path, **kwargs):
@@ -100,6 +113,11 @@ class PygaMixin(object):
 
     def track_event(self,  category=None, action=None, label=None, value=None, noninteraction=False):
         """
+        @variable str category
+        @variable str action
+        @variable str label
+        @variable str value
+        @variable  bool noninteraction
         Sends event to GA
         """
         e = Event(category=category, action=action, label=label, value=value)
