@@ -116,7 +116,7 @@ class PygaMixin(object):
             gitem.name = item.get('name', None)
             gitem.variation = item.get('variation', None)
             gitem.price = item.get('price', None)
-            gitem.quantity = item.get('quantity', None)
+            gitem.quantity = item.get('quantity', 1)
             trans.add_item(gitem)
 
         self.ga_tracker.track_transaction(transaction=trans,session=self.ga_session,visitor=self.ga_visitor)
