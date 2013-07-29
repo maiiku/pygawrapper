@@ -5,7 +5,7 @@ from pygawrapper import signals
 from pygawrapper.string_cookie_jar import StringCookieJar
 from pygawrapper.models import Pygawrapper
 from django.conf import settings
-ADD_TRACKER = getattr(settings,'PYGA_SET_REQUEST_TRACKER', default=False)
+ADD_TRACKER = getattr(settings,'PYGA_SET_REQUEST_TRACKER', False)
 
 class PygaWrapperMiddleware(object):
 
