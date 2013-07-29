@@ -1,11 +1,9 @@
-
 # pygawrapper README file
 
-@author Michal Korzeniowski <mko_san@lafiel.net>
-
-@version 1.1
-
-@date 07-2013
+@alternate-name pyga-django  
+@author Michal Korzeniowski <mko_san@lafiel.net>  
+@version 1.1  
+@date 07-2013  
 
 
 Description:
@@ -15,8 +13,8 @@ A wrapper class for pyga (Python Google Analitycs) providing middleware and mixi
 
 Requirements:
 -------------
-pyga >= 2.2.1
-django
+* pyga >= 2.2.1  
+* django
 
 
 Installing:
@@ -63,22 +61,34 @@ Setup:
     ```
 
 
-4. add PygaMixin to desired class you wish to extend with pyga's functions
-    ```python
-    example (extending user profile):
+4. a) add PygaMixin to desired class you wish to extend with pyga's functions  
+
+    example (extending user profile):    
     
+    ```python
     from pygawrapper.mixins import PygaMixin
     class Profile(PygaMixin, AccountsLanguageBaseProfile):
     ...
     ```
 
-6. runc syncdb to create pygawrapper's table
+    b) **or** you can tell pygawrapper to extand `request` object with `tracker`. 
+    The advantage of that apprach is that you get access to pygawrapper function from request regardsless of user authentication, with Google Analitycs session/visitor data preserved. To achive this you should add following line to your Django settings:
+    ```python
+    PYGA_SET_REQUEST_TRACKER = True
+    ```
+    You will be able to access pygawrappers function using:
+    ```python
+    request.tracker
+    ```
+
+
+5. runc syncdb to create pygawrapper's table
 
     in your project root run
     ```
     python manage.py syncdb
     ```
-5. See optional setup below
+6. See optional setup below
 
 
 Optional setup:
