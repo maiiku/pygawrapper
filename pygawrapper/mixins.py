@@ -2,8 +2,8 @@ from pygawrapper.models import Pygawrapper
 from pyga.requests import Tracker, Transaction, Item as gaItem, Visitor, Session, Page, Event
 from pygawrapper.string_cookie_jar import StringCookieJar
 from django.conf import settings
-GA_CODE = getattr(settings,'GOOGLE_ANALYTICS_CODE')
-GA_SITE = getattr(settings,'GOOGLE_ANALYTICS_SITE')
+GA_CODE = getattr(settings,'GOOGLE_ANALYTICS_CODE', None)
+GA_SITE = getattr(settings,'GOOGLE_ANALYTICS_SITE', None)
 from django.core.exceptions import ObjectDoesNotExist
 
 class PygaMixin(object):
