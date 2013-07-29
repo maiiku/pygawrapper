@@ -5,7 +5,7 @@ from pygawrapper import signals
 from pygawrapper.string_cookie_jar import StringCookieJar
 from pygawrapper.models import Pygawrapper
 from django.conf import settings
-ADD_TRACKER = getattr(settings,'PYGA_SET_REQUEST_TRACKER')
+ADD_TRACKER = getattr(settings,'PYGA_SET_REQUEST_TRACKER', default=False)
 
 class PygaWrapperMiddleware(object):
 
@@ -43,7 +43,7 @@ class PygaWrapperMiddleware(object):
                 request.tracker = PygaMixin().get_ga_tracker()
                 request.tracker.set_utm(request.COOKIES.get('__utma'), request.COOKIES.get('__utmb'))
 
-        return request
+        return None
 
     def process_response(self, request, response):
 
