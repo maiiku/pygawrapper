@@ -15,7 +15,7 @@ class PygaMixin(object):
         Gets stored __utma cookie
         """
         user_id = kwargs.get('user_id')
-        if not hasattr(self, '_utma') or 'force' in kwargs:
+        if not hasattr(self, '_utma') or ('force' in kwargs and 'user_id' in kwargs):
             try:
                 ga = Pygawrapper.objects.get(user_id=user_id)
                 _utma = ga.utma
@@ -24,6 +24,8 @@ class PygaMixin(object):
             if not _utma:
                 raise ObjectDoesNotExist('__utma for user %s does not exist in database. PygaMiddleware must set it first!')
             self._utma = StringCookieJar(_utma)._cookies
+        elif not hasattr(self, '_utma') and ('force' in kwargs and 'user_id' not in kwargs) :
+            raise ObjectDoesNotExist('You are trying to re-initialize pygwarapper but have not set utm values or forgot to pass user_id!')
         return self._utma
 
     def get_utmb(self, *args, **kwargs):
@@ -31,7 +33,7 @@ class PygaMixin(object):
         Gets stored __utmb cookie
         """
         user_id = kwargs.get('user_id')
-        if not hasattr(self, '_utmb') or 'force' in kwargs:
+        if not hasattr(self, '_utmb') or ('force' in kwargs and 'user_id' in kwargs):
             try:
                 ga = Pygawrapper.objects.get(user_id=user_id)
                 _utmb = ga.utmb
@@ -40,6 +42,8 @@ class PygaMixin(object):
             if not _utmb:
                 raise ObjectDoesNotExist('__utmb for user %s does not exist in database. PygaMiddleware must set it first!')
             self._utmb = StringCookieJar(_utmb)._cookies
+        elif not hasattr(self, '_utmb') and ('force' in kwargs and 'user_id' not in kwargs) :
+            raise ObjectDoesNotExist('You are trying to re-initialize pygwarapper but have not set utm values or forgot to pass user_id!')
         return self._utmb
 
     def set_utma(self, utma):
@@ -51,6 +55,7 @@ class PygaMixin(object):
     def set_utm(self, utma, utmb):
         self.set_utma(utma)
         self.set_utmb(utmb)
+        self.get_ga_tracker(force=True)
 
     def get_ga_visitor(self, *args, **kwargs):
         """
@@ -58,7 +63,7 @@ class PygaMixin(object):
         """
         if not hasattr(self, 'ga_visitor') or 'force' in kwargs:
             self.ga_visitor = Visitor().extract_from_utma(self.get_utma(**kwargs)) if \
-                'user_id' in kwargs else Visitor()
+                'user_id' in kwargs or 'force' in kwargs else Visitor()
         return self.ga_visitor
 
     def get_ga_session(self, *args, **kwargs):
@@ -67,7 +72,7 @@ class PygaMixin(object):
         """
         if not hasattr(self, 'ga_session') or 'force' in kwargs:
             self.ga_session = Session().extract_from_utmb(self.get_utmb(**kwargs)) \
-                if 'user_id' in kwargs else Session()
+                if 'user_id' in kwargs or 'force' in kwargs else Session()
         return self.ga_session
 
     def get_ga_tracker(self, GOOGLE_ANALYTICS_CODE=GA_CODE, GOOGLE_ANALYTICS_SITE=GA_SITE, *args, **kwargs):
