@@ -10,10 +10,11 @@ class PygaMixin(object):
     """
     Add function to retrive ga data.
     """
-    def get_utma(self, user_id, *args, **kwargs):
+    def get_utma(self, *args, **kwargs):
         """
         Gets stored __utma cookie
         """
+        user_id = kwargs.get('user_id')
         if not hasattr(self, '_utma') or 'force' in kwargs:
             try:
                 ga = Pygawrapper.objects.get(user_id=user_id)
@@ -25,10 +26,11 @@ class PygaMixin(object):
             self._utma = StringCookieJar(_utma)._cookies
         return self._utma
 
-    def get_utmb(self, user_id, *args, **kwargs):
+    def get_utmb(self, *args, **kwargs):
         """
         Gets stored __utmb cookie
         """
+        user_id = kwargs.get('user_id')
         if not hasattr(self, '_utmb') or 'force' in kwargs:
             try:
                 ga = Pygawrapper.objects.get(user_id=user_id)
@@ -55,7 +57,7 @@ class PygaMixin(object):
         Gets a visitor and optionally feeds it with __utma data if user_id is provided
         """
         if not hasattr(self, 'ga_visitor') or 'force' in kwargs:
-            self.ga_visitor = Visitor().extract_from_utma(self.get_utma(kwargs['user_id'], **kwargs)) if \
+            self.ga_visitor = Visitor().extract_from_utma(self.get_utma(**kwargs)) if \
                 'user_id' in kwargs else Visitor()
         return self.ga_visitor
 
@@ -64,11 +66,11 @@ class PygaMixin(object):
         Gets a session and optionally feeds it with __utmb data if user_id is provided
         """
         if not hasattr(self, 'ga_session') or 'force' in kwargs:
-            self.ga_session = Session().extract_from_utmb(self.get_utmb(kwargs['user_id'], **kwargs)) \
+            self.ga_session = Session().extract_from_utmb(self.get_utmb(**kwargs)) \
                 if 'user_id' in kwargs else Session()
         return self.ga_session
 
-    def get_ga_tracker(self, user_id=None, GOOGLE_ANALYTICS_CODE=GA_CODE, GOOGLE_ANALYTICS_SITE=GA_SITE, *args, **kwargs):
+    def get_ga_tracker(self, GOOGLE_ANALYTICS_CODE=GA_CODE, GOOGLE_ANALYTICS_SITE=GA_SITE, *args, **kwargs):
         """
         Creates a tracker and fills it with session and visitor, optionally matched with given user if user_id is provided
         Returns self for convenient use of other wrapped functions
