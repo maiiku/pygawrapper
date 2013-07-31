@@ -62,8 +62,15 @@ class PygaMixin(object):
         Gets a visitor and optionally feeds it with __utma data if user_id is provided
         """
         if not hasattr(self, 'ga_visitor') or 'force' in kwargs:
-            self.ga_visitor = Visitor().extract_from_utma(self.get_utma(**kwargs)) if \
-                'user_id' in kwargs or 'force' in kwargs else Visitor()
+            if 'user_id' in kwargs or 'force':
+                self.get_utma(**kwargs)
+            try:
+                self._utma.split('.')
+            except:
+                self.ga_visitor = Visitor()
+            else:
+                self.ga_visitor = Visitor().extract_from_utma(self._utma)
+
         return self.ga_visitor
 
     def get_ga_session(self, *args, **kwargs):
@@ -71,8 +78,14 @@ class PygaMixin(object):
         Gets a session and optionally feeds it with __utmb data if user_id is provided
         """
         if not hasattr(self, 'ga_session') or 'force' in kwargs:
-            self.ga_session = Session().extract_from_utmb(self.get_utmb(**kwargs)) \
-                if 'user_id' in kwargs or 'force' in kwargs else Session()
+            if 'user_id' in kwargs or 'force':
+                self.get_utmb(**kwargs)
+            try:
+                self._utmb.split('.')
+            except:
+                self.ga_session = Session()
+            else:
+                self.ga_session = Session().extract_from_utmb(self.get_utmb)
         return self.ga_session
 
     def get_ga_tracker(self, GOOGLE_ANALYTICS_CODE=GA_CODE, GOOGLE_ANALYTICS_SITE=GA_SITE, *args, **kwargs):
