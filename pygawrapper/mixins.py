@@ -62,7 +62,7 @@ class PygaMixin(object):
         Gets a visitor and optionally feeds it with __utma data if user_id is provided
         """
         if not hasattr(self, 'ga_visitor') or 'force' in kwargs:
-            if 'user_id' in kwargs or 'force':
+            if 'user_id' in kwargs or 'force' in kwargs:
                 self.get_utma(**kwargs)
             try:
                 self._utma.split('.')
@@ -78,7 +78,7 @@ class PygaMixin(object):
         Gets a session and optionally feeds it with __utmb data if user_id is provided
         """
         if not hasattr(self, 'ga_session') or 'force' in kwargs:
-            if 'user_id' in kwargs or 'force':
+            if 'user_id' in kwargs or 'force' in kwargs:
                 self.get_utmb(**kwargs)
             try:
                 self._utmb.split('.')
