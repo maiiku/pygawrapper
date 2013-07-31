@@ -85,7 +85,7 @@ class PygaMixin(object):
             except:
                 self.ga_session = Session()
             else:
-                self.ga_session = Session().extract_from_utmb(self.get_utmb)
+                self.ga_session = Session().extract_from_utmb(self._utmb)
         return self.ga_session
 
     def get_ga_tracker(self, GOOGLE_ANALYTICS_CODE=GA_CODE, GOOGLE_ANALYTICS_SITE=GA_SITE, *args, **kwargs):
