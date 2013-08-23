@@ -34,9 +34,9 @@ class PygaWrapperMiddleware(object):
                 ga.utma = _utma.dump()
                 ga.save()
             #init
+            from pygawrapper.mixins import PygaMixin
             PygaMixin().get_ga_tracker(user_id=u)
             if ADD_TRACKER:
-                from pygawrapper.mixins import PygaMixin
                 request.tracker = PygaMixin().get_ga_tracker(user_id=u)
         else:
             #add anonymous tracker
