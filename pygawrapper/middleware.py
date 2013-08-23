@@ -33,12 +33,12 @@ class PygaWrapperMiddleware(object):
             if utma != _utma:
                 ga.utma = _utma.dump()
                 ga.save()
-            #save user ip in DBmigrate pygawrapper
 
+            #save user ip in DBmigrate pygawrappe
             if 'ip' in user_data:
                 if user_data['ip'] != ga.ip:
                     ga.ip = user_data['ip']
-                    ga.save
+                    ga.save()
             #init
             signals.pyga_init_query.send(sender=None, request=request)
             if ADD_TRACKER:
