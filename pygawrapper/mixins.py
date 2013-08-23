@@ -19,11 +19,13 @@ class PygaMixin(object):
             try:
                 ga = Pygawrapper.objects.get(user_id=user_id)
                 _utma = ga.utma
+                _ip = ga.ip
             except Pygawrapper.DoesNotExist:
                 _utma = None
             if not _utma:
                 raise ObjectDoesNotExist('__utma for user %s does not exist in database. PygaMiddleware must set it first!')
             self._utma = StringCookieJar(_utma)._cookies
+            self._ip = _ip
         elif not hasattr(self, '_utma') and ('force' in kwargs and 'user_id' not in kwargs) :
             raise ObjectDoesNotExist('You are trying to re-initialize pygwarapper but have not set utm values or forgot to pass user_id!')
         return self._utma
@@ -70,6 +72,8 @@ class PygaMixin(object):
                 self.ga_visitor = Visitor()
             else:
                 self.ga_visitor = Visitor().extract_from_utma(self._utma)
+                if self._ip:
+                    self.ga_visitor.ip_address = self._ip
 
         return self.ga_visitor
 

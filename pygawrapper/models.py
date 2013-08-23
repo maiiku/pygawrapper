@@ -6,4 +6,5 @@ class Pygawrapper(models.Model):
     user_id = models.PositiveIntegerField(unique=True)
     utma = models.TextField(default=None, null=True, editable=False)
     utmb = models.TextField(default=None, null=True, editable=False)
+    ip = models.GenericIPAddressField(default=None, null=True, editable=False)
 

@@ -33,6 +33,11 @@ class PygaWrapperMiddleware(object):
             if utma != _utma:
                 ga.utma = _utma.dump()
                 ga.save()
+            #save user ip in DB
+            if 'ip' in user_data:
+                if user_data['id'] != ga.ip:
+                    ga.ip = user_data['id']
+                    ga.save
             #init
             signals.pyga_init_query.send(sender=None, request=request)
             if ADD_TRACKER:
