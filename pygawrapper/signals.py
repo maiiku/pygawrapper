@@ -27,3 +27,7 @@ from pygawrapper.signals import pyga_user_query
 signals.pyga_user_query.connect(pyga_user_query_listener)
 
 """
+pyga_init_query = Signal(providing_args=['request'])
+pyga_user_query.__doc__ = """
+Sent to initilize pyga with fresh data
+"""
