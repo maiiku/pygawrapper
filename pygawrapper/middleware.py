@@ -51,7 +51,7 @@ class PygaWrapperMiddleware(object):
             if ADD_TRACKER:
                 from pygawrapper.mixins import PygaMixin
                 request.tracker = PygaMixin().get_ga_tracker()
-                request.tracker.set_utm(request.COOKIES.get('__utma'), request.COOKIES.get('__utmb'))
+                request.tracker.set_utm(request.COOKIES.get('__utma'), request.COOKIES.get('__utmb'), None)
 
         return None
 

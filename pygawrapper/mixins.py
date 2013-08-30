@@ -54,9 +54,13 @@ class PygaMixin(object):
     def set_utmb(self, utmb):
         self._utmb = utmb
 
-    def set_utm(self, utma, utmb):
+    def set_ip(self, ip):
+        self._ip = ip
+
+    def set_utm(self, utma, utmb, ip):
         self.set_utma(utma)
         self.set_utmb(utmb)
+        self.set_ip(ip)
         self.get_ga_tracker(force=True)
 
     def get_ga_visitor(self, *args, **kwargs):
