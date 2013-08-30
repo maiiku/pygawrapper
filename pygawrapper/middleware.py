@@ -21,24 +21,26 @@ class PygaWrapperMiddleware(object):
         if u:
             #retrive ga data from db
             ga, created = Pygawrapper.objects.get_or_create(user_id=u)
-            #set session data for GA
-            utmb = StringCookieJar(ga.utmb)
-            _utmb = StringCookieJar(request.COOKIES.get('__utmb'))
-            if utmb != _utmb:
-                ga.utmb = _utmb.dump()
-                ga.save()
-            #save user cookie in DB
-            utma = StringCookieJar(ga.utma)
-            _utma = StringCookieJar(request.COOKIES.get('__utma'))
-            if utma != _utma:
-                ga.utma = _utma.dump()
-                ga.save()
-
-            #save user ip in DBmigrate pygawrappe
-            if 'ip' in user_data:
-                if user_data['ip'] != ga.ip:
-                    ga.ip = user_data['ip']
+            #f not ajax request
+            if not request.is_ajax():
+                #set session data for GA
+                utmb = StringCookieJar(ga.utmb)
+                _utmb = StringCookieJar(request.COOKIES.get('__utmb'))
+                if utmb != _utmb:
+                    ga.utmb = _utmb.dump()
                     ga.save()
+                #save user cookie in DB
+                utma = StringCookieJar(ga.utma)
+                _utma = StringCookieJar(request.COOKIES.get('__utma'))
+                if utma != _utma:
+                    ga.utma = _utma.dump()
+                    ga.save()
+
+                #save user ip in DBmigrate pygawrappe
+                if 'ip' in user_data:
+                    if user_data['ip'] != ga.ip:
+                        ga.ip = user_data['ip']
+                        ga.save()
             #init
             signals.pyga_init_query.send(sender=None, request=request)
             if ADD_TRACKER:
